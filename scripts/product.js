@@ -161,64 +161,52 @@ function handleAddToCart() {
     alert("Produkt został dodany do koszyka!");
   });
 }
-// Funkcja obsługująca dodawanie lub usuwanie produktu z listy obserwowanych
+
 function handleAddToWatchlist() {
   addToWatchlistButton.addEventListener("click", () => {
-    // Sprawdzamy, czy użytkownik jest zalogowany
     const loggedInUser = getFromLocalStorage("loggedInUser");
+
     if (!loggedInUser) {
       alert("Musisz być zalogowany, aby dodać/usuwać produkt z listy obserwowanych.");
       return;
     }
 
-    const productToToggle = {
-      id: document.getElementById("product-code").textContent, // ID produktu (kod)
-      name: document.getElementById("product-name").textContent, // Nazwa produktu
-      product_code: document.getElementById("product-code").textContent, // Kod produktu
-      price: parseFloat(document.getElementById("product-price")?.textContent.replace(' zł', '')), // Cena
-    };
+    const productCode = document.getElementById("product-code").textContent;
 
-    // Sprawdzamy, czy lista obserwowanych już istnieje, jeśli nie, tworzymy pustą
+    // Tworzymy listę obserwowanych, jeśli jeszcze nie istnieje
     if (!loggedInUser.watchlist) {
       loggedInUser.watchlist = [];
     }
 
     // Sprawdzamy, czy produkt jest już na liście obserwowanych
     const isProductInWatchlist = loggedInUser.watchlist.some(
-      (item) => item.id === productToToggle.id
+      (item) => item.id === productCode
     );
 
     if (isProductInWatchlist) {
-      // Jeśli produkt jest już na liście, usuwamy go
+      // Usuń produkt z listy obserwowanych
       loggedInUser.watchlist = loggedInUser.watchlist.filter(
-        (item) => item.id !== productToToggle.id
+        (item) => item.id !== productCode
       );
-
-      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
       saveToLocalStorage("loggedInUser", loggedInUser);
 
-      // Zmiana stanu przycisku - odznaczenie ikony serca
-      addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
-      addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
+      // Usuń klasę "added" z przycisku
+      addToWatchlistButton.classList.remove("added");
 
       alert("Produkt został usunięty z listy obserwowanych.");
     } else {
-      // Jeśli produkt nie jest na liście, dodajemy go
-      loggedInUser.watchlist.push(productToToggle);
-
-      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
+      // Dodaj produkt do listy obserwowanych
+      loggedInUser.watchlist.push({ id: productCode });
       saveToLocalStorage("loggedInUser", loggedInUser);
 
-      // Zmiana stanu przycisku - zaznaczenie ikony serca
-      addToWatchlistButton.querySelector(".fa-regular").style.display = "none";
-      addToWatchlistButton.querySelector(".fa-solid").style.display = "block";
+      // Dodaj klasę "added" do przycisku
+      addToWatchlistButton.classList.add("added");
 
       alert("Produkt został dodany do listy obserwowanych!");
     }
   });
 }
 
-// Funkcja do inicjalizacji stanu przycisku (jeśli produkt jest już na liście obserwowanych)
 function initializeWatchlistButton() {
   const loggedInUser = getFromLocalStorage("loggedInUser");
   const addToWatchlistButton = document.querySelector(".add-to-watchlist");
@@ -231,13 +219,11 @@ function initializeWatchlistButton() {
     );
 
     if (isProductInWatchlist) {
-      // Jeśli produkt jest na liście, zmieniamy stan przycisku na zaznaczony
-      addToWatchlistButton.querySelector(".fa-regular").style.display = "none";
-      addToWatchlistButton.querySelector(".fa-solid").style.display = "block";
+      // Jeśli produkt jest na liście, dodajemy klasę "added"
+      addToWatchlistButton.classList.add("added");
     } else {
-      // Jeśli produkt nie jest na liście, pozostawiamy stan niezaznaczony
-      addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
-      addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
+      // Jeśli produkt nie jest na liście, usuwamy klasę "added"
+      addToWatchlistButton.classList.remove("added");
     }
   }
 }
