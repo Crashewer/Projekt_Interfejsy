@@ -10,5 +10,17 @@
     "model_img": "model.png",
     "available_colors": ["black", "blue", "red", "purple", "grey"],
     "available_sizes": ["S", "XL", "XXL"]
+  },
+  {
+    "id": 2,
+    "product_code": "K2167",
+    "name": "product2",
+    "price": 25.99,
+    "main_img": "product2.png",
+    "front_img": "front.png",
+    "back_img": "back.png",
+    "model_img": "model.png",
+    "available_colors": ["black", "blue", "purple"],
+    "available_sizes": ["S", "M", "L", "XXL"]
   }
 ]
