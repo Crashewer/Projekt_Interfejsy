@@ -1,85 +1,77 @@
-// Zmienne do przechowywania aktualnie wybranego koloru, rozmiaru i ilości
-let selectedColor = null;
-let selectedSize = null;
-let productQuantity = 1;
+document.addEventListener("DOMContentLoaded", () =>
+{
+  let selectedSize = null;
+  let selectedColor = null;
+  let quantity = 1;
 
-// Funkcja do inicjalizacji interakcji na stronie
-function initProductPage() {
-  // Dodaj event listener do rozmiarów
-  const sizeElements = document.querySelectorAll('.size.available');
-  sizeElements.forEach(size => {
-    size.addEventListener('click', function() {
-      // Zaznacz wybrany rozmiar
-      selectSize(size);
+  const productID = 1;
+
+  const sizeElements = document.querySelectorAll(".size.available");
+  const colorElements = document.querySelectorAll(".color");
+  const quantityMinus = document.querySelector(".quantity button:first-child");
+  const quantityPlus = document.querySelector(".quantity button:last-child");
+  const quantityDisplay = document.querySelector(".quantity span");
+  const addToCartButton = document.querySelector(".add-to-cart");
+
+  sizeElements.forEach((size) => {
+    size.addEventListener("click", () => {
+      // Usunięcie zaznaczenia z innych rozmiarów
+      sizeElements.forEach((s) => s.classList.remove("selected"));
+      // Zaznaczenie wybranego rozmiaru
+      size.classList.add("selected");
+      selectedSize = size.textContent; // Aktualizacja zmiennej
     });
   });
 
-  // Dodaj event listener do kolorów
-  const colorElements = document.querySelectorAll('.color');
-  colorElements.forEach(color => {
-    color.addEventListener('click', function() {
-      // Zaznacz wybrany kolor
-      selectColor(color);
+  // Funkcja zaznaczania koloru
+  colorElements.forEach((color) => {
+    color.addEventListener("click", () => {
+      // Usunięcie zaznaczenia z innych kolorów
+      colorElements.forEach((c) => c.classList.remove("selected"));
+      // Zaznaczenie wybranego koloru
+      color.classList.add("selected");
+      selectedColor = color.classList[1]; // Aktualizacja zmiennej (klasa koloru)
     });
   });
 
-  // Dodaj event listener do przycisków ilości
-  const quantityMinus = document.querySelector('.quantity button:first-child');
-  const quantityPlus = document.querySelector('.quantity button:last-child');
-
-  quantityMinus.addEventListener('click', function() {
-    if (productQuantity > 1) {
-      productQuantity--;
-      updateQuantityDisplay();
+  // Funkcja zmniejszania ilości
+  quantityMinus.addEventListener("click", () => {
+    if (quantity > 1) {
+      quantity--;
+      quantityDisplay.textContent = quantity;
     }
   });
 
-  quantityPlus.addEventListener('click', function() {
-    productQuantity++;
-    updateQuantityDisplay();
+  // Funkcja zwiększania ilości
+  quantityPlus.addEventListener("click", () => {
+    quantity++;
+    quantityDisplay.textContent = quantity;
   });
 
-  // Zaktualizuj wyświetlanie początkowej ilości
-  updateQuantityDisplay();
-}
+  // Funkcja dodawania do koszyka
+  addToCartButton.addEventListener("click", () => {
+    if (!selectedSize || !selectedColor) {
+      alert("Wybierz rozmiar i kolor przed dodaniem do koszyka.");
+      return;
+    }
 
-// Funkcja do zaznaczenia rozmiaru
-function selectSize(sizeElement) {
-  // Zresetuj zaznaczenie poprzedniego rozmiaru
-  const previousSelectedSize = document.querySelector('.size.selected');
-  if (previousSelectedSize) {
-    previousSelectedSize.classList.remove('selected');
-  }
+    // Tworzenie obiektu dla pojedynczego zakupu
+    const purchase = {
+      id: productID,
+      ilosc: quantity,
+      rozmiar: selectedSize,
+      kolor: selectedColor,
+    };
 
-  // Zaznacz nowy rozmiar
-  sizeElement.classList.add('selected');
-  selectedSize = sizeElement.textContent; // Przypisz wybrany rozmiar
-  console.log('Wybrany rozmiar:', selectedSize);
-}
+    // Pobranie aktualnego koszyka z LocalStorage (jeśli istnieje)
+    let cart = JSON.parse(localStorage.getItem("koszyk")) || [];
 
-// Funkcja do zaznaczenia koloru
-function selectColor(colorElement) {
-  // Zresetuj zaznaczenie poprzedniego koloru
-  const previousSelectedColor = document.querySelector('.color.selected');
-  if (previousSelectedColor) {
-    previousSelectedColor.classList.remove('selected');
-  }
+    // Dodanie zakupu do koszyka
+    cart.push(purchase);
 
-  // Zaznacz nowy kolor
-  colorElement.classList.add('selected');
-  selectedColor = colorElement.style.backgroundColor; // Przypisz wybrany kolor
-  console.log('Wybrany kolor:', selectedColor);
-}
+    // Zapisanie koszyka do LocalStorage
+    localStorage.setItem("koszyk", JSON.stringify(cart));
 
-// Funkcja do zaktualizowania wyświetlanej ilości
-function updateQuantityDisplay() {
-  const quantityDisplay = document.querySelector('.quantity span');
-  if (quantityDisplay) {
-    quantityDisplay.textContent = productQuantity;
-  }
-}
-
-// Uruchomienie funkcji inicjalizującej po załadowaniu strony
-document.addEventListener('DOMContentLoaded', function() {
-  initProductPage();
+    alert("Produkt dodany do koszyka!");
+  });
 });
