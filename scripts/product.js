@@ -117,25 +117,42 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Funkcja dodawania do koszyka
-  function handleAddToCart() {
+    function handleAddToCart() {
     addToCartButton.addEventListener("click", () => {
       if (!selectedSize || !selectedColor) {
         alert("Wybierz rozmiar i kolor przed dodaniem do koszyka.");
         return;
       }
 
-      const purchase = {
-        id: productID,
-        quantity: quantity,
-        size: selectedSize,
-        color: selectedColor,
+      const productToAdd = {
+        id: productID, // ID produktu
+        product_code: document.getElementById("product-code").textContent, // Kod produktu
+        name: document.getElementById("product-name").textContent, // Nazwa produktu
+        price: parseFloat(document.getElementById("product-price").textContent.replace(' zł', '')), // Cena
+        quantity: quantity, // Ilość
+        size: selectedSize, // Rozmiar
+        color: selectedColor // Kolor
       };
 
-      let cart = JSON.parse(localStorage.getItem("koszyk")) || [];
-      cart.push(purchase);
-      localStorage.setItem("koszyk", JSON.stringify(cart));
+      // Pobieramy dane użytkownika z LocalStorage
+      let user = JSON.parse(localStorage.getItem("user"));
 
-      alert("Produkt dodany do koszyka!");
+      if (user) {
+        // Sprawdzamy, czy istnieje już cart w danych użytkownika
+        if (!user.cart) {
+          user.cart = [];
+        }
+
+        // Dodajemy produkt do koszyka
+        user.cart.push(productToAdd);
+
+        // Zapisujemy zaktualizowane dane użytkownika w LocalStorage
+        localStorage.setItem("user", JSON.stringify(user));
+
+        alert("Produkt dodany do koszyka!");
+      } else {
+        alert("Nie znaleziono danych użytkownika.");
+      }
     });
   }
 
