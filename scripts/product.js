@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
+ddocument.addEventListener("DOMContentLoaded", () => {
   let selectedSize = null;
   let selectedColor = null;
   let quantity = 1;
@@ -14,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Elementy do manipulacji na stronie
   const sizeElements = document.querySelectorAll(".size");
-  const colorElements = document.querySelectorAll(".color");
   const quantityMinus = document.querySelector(".quantity button:first-child");
   const quantityPlus = document.querySelector(".quantity button:last-child");
   const quantityDisplay = document.querySelector(".quantity span");
@@ -56,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Wyświetlamy dostępne kolory
     const colorOptionsContainer = document.getElementById("color-options");
-    colorOptionsContainer.innerHTML = "";
+    colorOptionsContainer.innerHTML = ""; // Czyścimy poprzednie kolory
     product.available_colors.forEach((color) => {
       const colorOption = document.createElement("span");
       colorOption.className = `color ${color}`;
@@ -65,13 +64,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Aktywujemy tylko dostępne rozmiary
     const sizeOptionsContainer = document.getElementById("size-options");
-    product.available_sizes.forEach((size) => {
-      sizeElements.forEach((sizeElement) => {
-        if (sizeElement.textContent.trim() === size) {
-          sizeElement.classList.add("available");
-          sizeElement.classList.remove("unavailable");
-        }
-      });
+    sizeElements.forEach((sizeElement) => {
+      const size = sizeElement.textContent.trim();
+      if (product.available_sizes.includes(size)) {
+        sizeElement.classList.add("available");
+        sizeElement.classList.remove("unavailable");
+      } else {
+        sizeElement.classList.add("unavailable");
+        sizeElement.classList.remove("available");
+      }
     });
   }
 
@@ -90,11 +91,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Funkcja zaznaczania koloru
   function handleColorSelection() {
+    const colorElements = document.querySelectorAll(".color");
     colorElements.forEach((color) => {
       color.addEventListener("click", () => {
         colorElements.forEach((c) => c.classList.remove("selected"));
         color.classList.add("selected");
-        selectedColor = color.classList[1];  // Aktualizacja zmiennej (klasa koloru)
+        selectedColor = color.classList[1]; // Klasa koloru
       });
     });
   }
