@@ -26,45 +26,46 @@ document.addEventListener("DOMContentLoaded", function () {
   function displayProducts(products) {
     const tilesContainer = document.getElementById("tiles");
     tilesContainer.innerHTML = ""; // Czyści poprzednie wyniki
-
+  
     // Iteracja po przefiltrowanych produktach
     products.forEach((product) => {
       const productLink = document.createElement("a");
       productLink.href = `./product${product.id}.html`; // Link do strony produktu
-
+  
       const productTile = document.createElement("div");
       productTile.className = "product-tile";
-
+  
       const productPopup = document.createElement("div");
       productPopup.className = "product-popup";
       productPopup.innerHTML = "<p>Extra product details go here!</p>"; // Możesz dodać więcej szczegółów
-
+  
       const productContent = document.createElement("div");
       productContent.className = "product-content";
-
+  
       const productImage = document.createElement("img");
-      productImage.src = `../img/${product.main_img}`;
+      // Używamy nowej ścieżki do obrazka z ID produktu
+      productImage.src = `../img/products/${product.id}/${product.main_img}`;
       productImage.alt = product.name;
       productImage.className = "product-image";
-
+  
       const productInfo = document.createElement("div");
       productInfo.className = "product-info";
-
+  
       const productName = document.createElement("h3");
       productName.className = "product-name";
       productName.textContent = product.name;
-
+  
       const productPrice = document.createElement("p");
       productPrice.className = "product-price";
       productPrice.textContent = `$${product.price}`;
-
+  
       // Kolor
       const productColor = document.createElement("div");
       productColor.className = "product-color";
       const colorLabel = document.createElement("label");
       colorLabel.textContent = "Color:";
       productColor.appendChild(colorLabel);
-
+  
       const colorOptions = document.createElement("div");
       colorOptions.className = "color-options";
       product.available_colors.forEach((color) => {
@@ -74,23 +75,23 @@ document.addEventListener("DOMContentLoaded", function () {
         colorOptions.appendChild(colorOption);
       });
       productColor.appendChild(colorOptions);
-
+  
       // Dodanie wszystkich elementów do kafelka
       productInfo.appendChild(productName);
       productInfo.appendChild(productPrice);
       productInfo.appendChild(productColor);
-
+  
       productContent.appendChild(productImage);
       productContent.appendChild(productInfo);
-
+  
       productTile.appendChild(productPopup);
       productTile.appendChild(productContent);
-
+  
       productLink.appendChild(productTile);
-
+  
       tilesContainer.appendChild(productLink);
     });
-
+  
     // Po załadowaniu produktów, zaktualizuj klasy dla kafelków
     updateLastInRow();
   }
