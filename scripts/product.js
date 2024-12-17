@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const quantityPlus = document.querySelector(".quantity button:last-child");
   const quantityDisplay = document.querySelector(".quantity span");
   const addToCartButton = document.querySelector(".add-to-cart");
+  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
 
   // Pobranie produktów z pliku JSON
   function loadProducts() {
@@ -162,11 +163,9 @@ function handleAddToCart() {
 }
 // Funkcja obsługująca dodawanie lub usuwanie produktu z listy obserwowanych
 function handleAddToWatchlist() {
-  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
-  const loggedInUser = getFromLocalStorage("loggedInUser");
-
   addToWatchlistButton.addEventListener("click", () => {
     // Sprawdzamy, czy użytkownik jest zalogowany
+    const loggedInUser = getFromLocalStorage("loggedInUser");
     if (!loggedInUser) {
       alert("Musisz być zalogowany, aby dodać/usuwać produkt z listy obserwowanych.");
       return;
