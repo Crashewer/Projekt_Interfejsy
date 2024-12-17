@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const productID = getQueryParameter("id");
 
   // Elementy do manipulacji na stronie
-  const sizeElements = document.querySelectorAll(".size.available");
+  const sizeElements = document.querySelectorAll(".size");
   const colorElements = document.querySelectorAll(".color");
   const quantityMinus = document.querySelector(".quantity button:first-child");
   const quantityPlus = document.querySelector(".quantity button:last-child");
@@ -54,16 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("back-img").src = `../img/products/product${product.id}/${product.back_img}`;
     document.getElementById("model-img").src = `../img/products/product${product.id}/${product.model_img}`;
 
-    // Wyświetlamy dostępne rozmiary
-    const sizeOptionsContainer = document.getElementById("size-options");
-    sizeOptionsContainer.innerHTML = "";
-    product.available_sizes.forEach((size) => {
-      const sizeOption = document.createElement("span");
-      sizeOption.className = "size available";
-      sizeOption.textContent = size;
-      sizeOptionsContainer.appendChild(sizeOption);
-    });
-
     // Wyświetlamy dostępne kolory
     const colorOptionsContainer = document.getElementById("color-options");
     colorOptionsContainer.innerHTML = "";
@@ -72,15 +62,28 @@ document.addEventListener("DOMContentLoaded", () => {
       colorOption.className = `color ${color}`;
       colorOptionsContainer.appendChild(colorOption);
     });
+
+    // Aktywujemy tylko dostępne rozmiary
+    const sizeOptionsContainer = document.getElementById("size-options");
+    product.available_sizes.forEach((size) => {
+      sizeElements.forEach((sizeElement) => {
+        if (sizeElement.textContent.trim() === size) {
+          sizeElement.classList.add("available");
+          sizeElement.classList.remove("unavailable");
+        }
+      });
+    });
   }
 
   // Funkcja zaznaczania rozmiaru
   function handleSizeSelection() {
     sizeElements.forEach((size) => {
       size.addEventListener("click", () => {
-        sizeElements.forEach((s) => s.classList.remove("selected"));
-        size.classList.add("selected");
-        selectedSize = size.textContent;
+        if (size.classList.contains("available")) {
+          sizeElements.forEach((s) => s.classList.remove("selected"));
+          size.classList.add("selected");
+          selectedSize = size.textContent.trim();
+        }
       });
     });
   }
@@ -91,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       color.addEventListener("click", () => {
         colorElements.forEach((c) => c.classList.remove("selected"));
         color.classList.add("selected");
-        selectedColor = color.classList[1];
+        selectedColor = color.classList[1];  // Aktualizacja zmiennej (klasa koloru)
       });
     });
   }
