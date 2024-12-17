@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
   
       const productImage = document.createElement("img");
       // Używamy nowej ścieżki do obrazka z ID produktu
-      productImage.src = `../img/products/${product.id}/${product.main_img}`;
+      productImage.src = `../img/products/product${product.id}/${product.main_img}`;
       productImage.alt = product.name;
       productImage.className = "product-image";
   
