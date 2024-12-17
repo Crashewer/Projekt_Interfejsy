@@ -9,7 +9,8 @@
     "back_img": "back.png",
     "model_img": "model.png",
     "available_colors": ["black", "blue", "red", "purple", "grey"],
-    "available_sizes": ["S", "XL", "XXL"]
+    "available_sizes": ["S", "XL", "XXL"],
+    "description": "T-shirt z lekkiego bawełnianego dżerseju. Okrągły dekolt ze ściągaczem, prosty brzeg u dołu."
   },
   {
     "id": 2,
@@ -21,6 +22,7 @@
     "back_img": "back.png",
     "model_img": "model.png",
     "available_colors": ["black", "blue", "purple"],
-    "available_sizes": ["S", "M", "L", "XXL"]
+    "available_sizes": ["S", "M", "L", "XXL"],
+    "description": "T-shirt z lekkiego bawełnianego dżerseju. Okrągły dekolt ze ściągaczem, prosty brzeg u dołu."
   }
 ]
