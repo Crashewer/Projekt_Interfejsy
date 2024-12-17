@@ -160,7 +160,7 @@ function handleAddToCart() {
     alert("Produkt został dodany do koszyka!");
   });
 }
-// Funkcja obsługująca dodawanie produktu do listy obserwowanych
+// Funkcja obsługująca dodawanie lub usuwanie produktu z listy obserwowanych
 function handleAddToWatchlist() {
   const addToWatchlistButton = document.querySelector(".add-to-watchlist");
   const loggedInUser = getFromLocalStorage("loggedInUser");
@@ -168,11 +168,11 @@ function handleAddToWatchlist() {
   addToWatchlistButton.addEventListener("click", () => {
     // Sprawdzamy, czy użytkownik jest zalogowany
     if (!loggedInUser) {
-      alert("Musisz być zalogowany, aby dodać produkt do listy obserwowanych.");
+      alert("Musisz być zalogowany, aby dodać/usuwać produkt z listy obserwowanych.");
       return;
     }
 
-    const productToAdd = {
+    const productToToggle = {
       id: document.getElementById("product-code").textContent, // ID produktu (kod)
       name: document.getElementById("product-name").textContent, // Nazwa produktu
       product_code: document.getElementById("product-code").textContent, // Kod produktu
@@ -184,17 +184,28 @@ function handleAddToWatchlist() {
       loggedInUser.watchlist = [];
     }
 
-    // Sprawdzamy, czy produkt już jest na liście obserwowanych
-    const isAlreadyInWatchlist = loggedInUser.watchlist.some(
-      (item) => item.id === productToAdd.id
+    // Sprawdzamy, czy produkt jest już na liście obserwowanych
+    const isProductInWatchlist = loggedInUser.watchlist.some(
+      (item) => item.id === productToToggle.id
     );
 
-    if (isAlreadyInWatchlist) {
-      // Jeśli produkt jest już na liście, informujemy użytkownika
-      alert("Produkt jest już na liście obserwowanych.");
+    if (isProductInWatchlist) {
+      // Jeśli produkt jest już na liście, usuwamy go
+      loggedInUser.watchlist = loggedInUser.watchlist.filter(
+        (item) => item.id !== productToToggle.id
+      );
+
+      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
+      saveToLocalStorage("loggedInUser", loggedInUser);
+
+      // Zmiana stanu przycisku - odznaczenie ikony serca
+      addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
+      addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
+
+      alert("Produkt został usunięty z listy obserwowanych.");
     } else {
       // Jeśli produkt nie jest na liście, dodajemy go
-      loggedInUser.watchlist.push(productToAdd);
+      loggedInUser.watchlist.push(productToToggle);
 
       // Zapisujemy zaktualizowanego użytkownika w LocalStorage
       saveToLocalStorage("loggedInUser", loggedInUser);
@@ -205,38 +216,6 @@ function handleAddToWatchlist() {
 
       alert("Produkt został dodany do listy obserwowanych!");
     }
-  });
-}
-
-// Funkcja do usuwania produktu z listy obserwowanych (w razie potrzeby)
-function removeFromWatchlist() {
-  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
-  const loggedInUser = getFromLocalStorage("loggedInUser");
-
-  addToWatchlistButton.addEventListener("click", () => {
-    // Sprawdzamy, czy użytkownik jest zalogowany
-    if (!loggedInUser) {
-      alert("Musisz być zalogowany, aby usunąć produkt z listy obserwowanych.");
-      return;
-    }
-
-    const productToRemove = {
-      id: document.getElementById("product-code").textContent, // ID produktu (kod)
-    };
-
-    // Usuwamy produkt z listy obserwowanych
-    loggedInUser.watchlist = loggedInUser.watchlist.filter(
-      (item) => item.id !== productToRemove.id
-    );
-
-    // Zapisujemy zaktualizowanego użytkownika w LocalStorage
-    saveToLocalStorage("loggedInUser", loggedInUser);
-
-    // Zmiana stanu przycisku - odznaczenie ikony serca
-    addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
-    addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
-
-    alert("Produkt został usunięty z listy obserwowanych.");
   });
 }
 
@@ -263,7 +242,6 @@ function initializeWatchlistButton() {
     }
   }
 }
-
   // Ładujemy dane o produkcie i wyświetlamy je na stronie
   loadProducts()
     .then((products) => {
