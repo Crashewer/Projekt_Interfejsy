@@ -164,6 +164,7 @@ function handleAddToCart() {
 
 function handleAddToWatchlist() {
   addToWatchlistButton.addEventListener("click", () => {
+    // Pobranie danych użytkownika z LocalStorage
     const loggedInUser = getFromLocalStorage("loggedInUser");
 
     if (!loggedInUser) {
@@ -171,35 +172,45 @@ function handleAddToWatchlist() {
       return;
     }
 
-    const productCode = document.getElementById("product-code").textContent;
+    // Pobieranie szczegółów produktu z DOM
+    const productToToggle = {
+      id: document.getElementById("product-code").textContent, // ID produktu (kod)
+      name: document.getElementById("product-name").textContent, // Nazwa produktu
+      product_code: document.getElementById("product-code").textContent, // Kod produktu
+      price: parseFloat(document.getElementById("product-price")?.textContent.replace(' zł', '')), // Cena
+    };
 
-    // Tworzymy listę obserwowanych, jeśli jeszcze nie istnieje
+    // Sprawdzamy, czy lista obserwowanych już istnieje, jeśli nie, tworzymy pustą
     if (!loggedInUser.watchlist) {
       loggedInUser.watchlist = [];
     }
 
     // Sprawdzamy, czy produkt jest już na liście obserwowanych
     const isProductInWatchlist = loggedInUser.watchlist.some(
-      (item) => item.id === productCode
+      (item) => item.id === productToToggle.id
     );
 
     if (isProductInWatchlist) {
-      // Usuń produkt z listy obserwowanych
+      // Jeśli produkt jest już na liście, usuwamy go
       loggedInUser.watchlist = loggedInUser.watchlist.filter(
-        (item) => item.id !== productCode
+        (item) => item.id !== productToToggle.id
       );
+
+      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
       saveToLocalStorage("loggedInUser", loggedInUser);
 
-      // Usuń klasę "added" z przycisku
+      // Zmiana stanu przycisku - usunięcie klasy "added"
       addToWatchlistButton.classList.remove("added");
 
       alert("Produkt został usunięty z listy obserwowanych.");
     } else {
-      // Dodaj produkt do listy obserwowanych
-      loggedInUser.watchlist.push({ id: productCode });
+      // Jeśli produkt nie jest na liście, dodajemy go
+      loggedInUser.watchlist.push(productToToggle);
+
+      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
       saveToLocalStorage("loggedInUser", loggedInUser);
 
-      // Dodaj klasę "added" do przycisku
+      // Zmiana stanu przycisku - dodanie klasy "added"
       addToWatchlistButton.classList.add("added");
 
       alert("Produkt został dodany do listy obserwowanych!");
