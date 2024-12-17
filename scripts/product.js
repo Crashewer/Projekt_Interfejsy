@@ -74,6 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
         sizeElement.classList.remove("available");
       }
     });
+
+    // Funkcja zaznaczania koloru
+    const colorElements = document.querySelectorAll(".color");
+    colorElements.forEach((color) => {
+      color.addEventListener("click", () => {
+        // Usunięcie zaznaczenia z innych kolorów
+        colorElements.forEach((c) => c.classList.remove("selected"));
+        // Zaznaczenie wybranego koloru
+        color.classList.add("selected");
+        selectedColor = color.classList[1]; // Aktualizacja zmiennej (klasa koloru)
+      });
+    });
   }
 
   // Funkcja zaznaczania rozmiaru
@@ -85,18 +97,6 @@ document.addEventListener("DOMContentLoaded", () => {
           size.classList.add("selected");
           selectedSize = size.textContent.trim();
         }
-      });
-    });
-  }
-
-  // Funkcja zaznaczania koloru
-  function handleColorSelection() {
-    const colorElements = document.querySelectorAll(".color");
-    colorElements.forEach((color) => {
-      color.addEventListener("click", () => {
-        colorElements.forEach((c) => c.classList.remove("selected"));
-        color.classList.add("selected");
-        selectedColor = color.classList[1]; // Klasa koloru
       });
     });
   }
@@ -146,7 +146,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (product) {
         displayProduct(product);
         handleSizeSelection();
-        handleColorSelection();
         handleQuantityChange();
         handleAddToCart();
       } else {
