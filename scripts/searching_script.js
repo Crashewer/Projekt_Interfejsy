@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Iteracja po przefiltrowanych produktach
     products.forEach((product) => {
       const productLink = document.createElement("a");
-      productLink.href = `./product${product.id}.html`; // Link do strony produktu
+      productLink.href = `./product.html?id=${product.id}`; // Link do strony product.html z id produktu
   
       const productTile = document.createElement("div");
       productTile.className = "product-tile";
