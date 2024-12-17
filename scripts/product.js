@@ -160,6 +160,109 @@ function handleAddToCart() {
     alert("Produkt został dodany do koszyka!");
   });
 }
+// Funkcja obsługująca dodawanie produktu do listy obserwowanych
+function handleAddToWatchlist() {
+  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
+  const loggedInUser = getFromLocalStorage("loggedInUser");
+
+  addToWatchlistButton.addEventListener("click", () => {
+    // Sprawdzamy, czy użytkownik jest zalogowany
+    if (!loggedInUser) {
+      alert("Musisz być zalogowany, aby dodać produkt do listy obserwowanych.");
+      return;
+    }
+
+    const productToAdd = {
+      id: document.getElementById("product-code").textContent, // ID produktu (kod)
+      name: document.getElementById("product-name").textContent, // Nazwa produktu
+      product_code: document.getElementById("product-code").textContent, // Kod produktu
+      price: parseFloat(document.getElementById("product-price")?.textContent.replace(' zł', '')), // Cena
+    };
+
+    // Sprawdzamy, czy lista obserwowanych już istnieje, jeśli nie, tworzymy pustą
+    if (!loggedInUser.watchlist) {
+      loggedInUser.watchlist = [];
+    }
+
+    // Sprawdzamy, czy produkt już jest na liście obserwowanych
+    const isAlreadyInWatchlist = loggedInUser.watchlist.some(
+      (item) => item.id === productToAdd.id
+    );
+
+    if (isAlreadyInWatchlist) {
+      // Jeśli produkt jest już na liście, informujemy użytkownika
+      alert("Produkt jest już na liście obserwowanych.");
+    } else {
+      // Jeśli produkt nie jest na liście, dodajemy go
+      loggedInUser.watchlist.push(productToAdd);
+
+      // Zapisujemy zaktualizowanego użytkownika w LocalStorage
+      saveToLocalStorage("loggedInUser", loggedInUser);
+
+      // Zmiana stanu przycisku - zaznaczenie ikony serca
+      addToWatchlistButton.querySelector(".fa-regular").style.display = "none";
+      addToWatchlistButton.querySelector(".fa-solid").style.display = "block";
+
+      alert("Produkt został dodany do listy obserwowanych!");
+    }
+  });
+}
+
+// Funkcja do usuwania produktu z listy obserwowanych (w razie potrzeby)
+function removeFromWatchlist() {
+  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
+  const loggedInUser = getFromLocalStorage("loggedInUser");
+
+  addToWatchlistButton.addEventListener("click", () => {
+    // Sprawdzamy, czy użytkownik jest zalogowany
+    if (!loggedInUser) {
+      alert("Musisz być zalogowany, aby usunąć produkt z listy obserwowanych.");
+      return;
+    }
+
+    const productToRemove = {
+      id: document.getElementById("product-code").textContent, // ID produktu (kod)
+    };
+
+    // Usuwamy produkt z listy obserwowanych
+    loggedInUser.watchlist = loggedInUser.watchlist.filter(
+      (item) => item.id !== productToRemove.id
+    );
+
+    // Zapisujemy zaktualizowanego użytkownika w LocalStorage
+    saveToLocalStorage("loggedInUser", loggedInUser);
+
+    // Zmiana stanu przycisku - odznaczenie ikony serca
+    addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
+    addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
+
+    alert("Produkt został usunięty z listy obserwowanych.");
+  });
+}
+
+// Funkcja do inicjalizacji stanu przycisku (jeśli produkt jest już na liście obserwowanych)
+function initializeWatchlistButton() {
+  const loggedInUser = getFromLocalStorage("loggedInUser");
+  const addToWatchlistButton = document.querySelector(".add-to-watchlist");
+  const productCode = document.getElementById("product-code").textContent;
+
+  // Sprawdzamy, czy użytkownik jest zalogowany i czy produkt znajduje się na liście obserwowanych
+  if (loggedInUser && loggedInUser.watchlist) {
+    const isProductInWatchlist = loggedInUser.watchlist.some(
+      (item) => item.id === productCode
+    );
+
+    if (isProductInWatchlist) {
+      // Jeśli produkt jest na liście, zmieniamy stan przycisku na zaznaczony
+      addToWatchlistButton.querySelector(".fa-regular").style.display = "none";
+      addToWatchlistButton.querySelector(".fa-solid").style.display = "block";
+    } else {
+      // Jeśli produkt nie jest na liście, pozostawiamy stan niezaznaczony
+      addToWatchlistButton.querySelector(".fa-regular").style.display = "block";
+      addToWatchlistButton.querySelector(".fa-solid").style.display = "none";
+    }
+  }
+}
 
   // Ładujemy dane o produkcie i wyświetlamy je na stronie
   loadProducts()
@@ -170,6 +273,8 @@ function handleAddToCart() {
         handleSizeSelection();
         handleQuantityChange();
         handleAddToCart();
+        handleAddToWatchlist();
+        initializeWatchlistButton();
       } else {
         console.error("Produkt o podanym ID nie istnieje!");
       }
