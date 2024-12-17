@@ -135,19 +135,19 @@ document.addEventListener("DOMContentLoaded", () => {
       };
 
       // Pobieramy dane użytkownika z LocalStorage
-      let user = JSON.parse(localStorage.getItem("user"));
+      let users = JSON.parse(localStorage.getItem("users"));
 
-      if (user) {
+      if (users) {
         // Sprawdzamy, czy istnieje już cart w danych użytkownika
-        if (!user.cart) {
-          user.cart = [];
+        if (!users.cart) {
+          users.cart = [];
         }
 
         // Dodajemy produkt do koszyka
-        user.cart.push(productToAdd);
+        users.cart.push(productToAdd);
 
         // Zapisujemy zaktualizowane dane użytkownika w LocalStorage
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem("users", JSON.stringify(users));
 
         alert("Produkt dodany do koszyka!");
       } else {
