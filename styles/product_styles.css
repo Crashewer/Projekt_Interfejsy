@@ -29,7 +29,15 @@ body {
   cursor: pointer;
 }
 
+.add-to-watchlist .fa-regular {
+  display: block;
+}
+
 .add-to-watchlist .fa-solid {
+  display: none;
+}
+
+.add-to-watchlist:hover .fa-regular {
   display: none;
 }
 
@@ -37,7 +45,19 @@ body {
   display: block;
 }
 
-.add-to-watchlist:hover .fa-regular {
+.add-to-watchlist.added .fa-regular {
+  display: none;
+}
+
+.add-to-watchlist.added .fa-solid {
+  display: block;
+}
+
+.add-to-watchlist.added:hover .fa-regular {
+  display: block;
+}
+
+.add-to-watchlist.added:hover .fa-solid {
   display: none;
 }
 
