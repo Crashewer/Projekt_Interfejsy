@@ -1,4 +1,4 @@
-ddocument.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   let selectedSize = null;
   let selectedColor = null;
   let quantity = 1;
