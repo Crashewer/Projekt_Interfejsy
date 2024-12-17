@@ -117,44 +117,49 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Funkcja dodawania do koszyka
-    function handleAddToCart() {
-    addToCartButton.addEventListener("click", () => {
-      if (!selectedSize || !selectedColor) {
-        alert("Wybierz rozmiar i kolor przed dodaniem do koszyka.");
-        return;
-      }
+function handleAddToCart() {
+  addToCartButton.addEventListener("click", () => {
+    // Sprawdzamy, czy użytkownik jest zalogowany
+    const loggedInUser = getFromLocalStorage("loggedInUser");
 
-      const productToAdd = {
-        id: productID, // ID produktu
-        product_code: document.getElementById("product-code").textContent, // Kod produktu
-        name: document.getElementById("product-name").textContent, // Nazwa produktu
-        price: parseFloat(document.getElementById("product-price").textContent.replace(' zł', '')), // Cena
-        quantity: quantity, // Ilość
-        size: selectedSize, // Rozmiar
-        color: selectedColor // Kolor
-      };
+    if (!loggedInUser) {
+      // Jeśli użytkownik nie jest zalogowany, wyświetlamy komunikat
+      alert("Musisz być zalogowany, aby dodać produkt do koszyka.");
+      return;
+    }
 
-      // Pobieramy dane użytkownika z LocalStorage
-      let users = JSON.parse(localStorage.getItem("users"));
+    if (!selectedSize || !selectedColor) {
+      alert("Wybierz rozmiar i kolor przed dodaniem do koszyka.");
+      return;
+    }
 
-      if (users) {
-        // Sprawdzamy, czy istnieje już cart w danych użytkownika
-        if (!users.cart) {
-          users.cart = [];
-        }
+    const productToAdd = {
+      id: productID, // ID produktu
+      product_code: document.getElementById("product-code").textContent, // Kod produktu
+      name: document.getElementById("product-name").textContent, // Nazwa produktu
+      price: parseFloat(document.getElementById("product-price").textContent.replace(' zł', '')), // Cena
+      quantity: quantity, // Ilość
+      size: selectedSize, // Rozmiar
+      color: selectedColor // Kolor
+    };
 
-        // Dodajemy produkt do koszyka
-        users.cart.push(productToAdd);
+    // Sprawdzamy, czy użytkownik ma już koszyk, jeśli nie, tworzymy pusty
+    if (!loggedInUser.cart) {
+      loggedInUser.cart = [];
+    }
 
-        // Zapisujemy zaktualizowane dane użytkownika w LocalStorage
-        localStorage.setItem("users", JSON.stringify(users));
+    // Dodajemy produkt do koszyka
+    loggedInUser.cart.push(productToAdd);
 
-        alert("Produkt dodany do koszyka!");
-      } else {
-        alert("Nie znaleziono danych użytkownika.");
-      }
-    });
-  }
+    // Zapisujemy zaktualizowanego użytkownika w LocalStorage
+    saveToLocalStorage("loggedInUser", loggedInUser);
+
+    // Zaktualizowanie liczby produktów w koszyku
+    updateCartCount();
+
+    alert("Produkt został dodany do koszyka!");
+  });
+}
 
   // Ładujemy dane o produkcie i wyświetlamy je na stronie
   loadProducts()
